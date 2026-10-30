@@ -1,5 +1,7 @@
 # qq-agent-presets
 
+> GitHub：https://github.com/msealing/qq-agent-presets
+
 DSH bundle 插件：为 [DeepSeek Harness](https://github.com/deepseek-ai) 插入 `qq-chat` /
 `qq-chat-v2` 两套 agent preset（QQ 聊天角色「鲸鲸」），并携带 **`qq-tool-restrict` 安全守卫**。
 
