@@ -1,0 +1,29 @@
+{
+  "name": "qq-agent-presets",
+  "version": "0.2.1-r1",
+  "description": "qq-bridge 的 DSH agent preset bundle：把 qq-chat / qq-chat-v2 作为 @deepseek-ai/dsh-agent-preset 行插入（DSH 0.1.7+ 的 preset 机制），并携带两个 preset 共用的 qq-tool-restrict 安全守卫",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "install-presets": "node scripts/setup-dsh.mjs",
+    "build-patches": "node scripts/build-agent-preset-patches.mjs",
+    "check-patches": "node scripts/build-agent-preset-patches.mjs --check",
+    "check-publish": "node scripts/check-publish.mjs .",
+    "test-publish-gate": "node scripts/test-publish-gate.mjs",
+    "test": "node scripts/test-tool-restrict-guard.mjs && node scripts/test-publish-gate.mjs"
+  },
+  "dependencies": {
+    "js-yaml": "^4.3.2"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": [
+        "./presets/qq-chat.patch.yml",
+        "./presets/qq-chat-v2.patch.yml"
+      ]
+    }
+  }
+}
