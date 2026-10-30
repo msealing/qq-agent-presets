@@ -46,6 +46,11 @@ const POISON = {
   'pem.txt': J('-----BEGIN ', 'RSA ', 'PRIVATE KEY-----\nMIIEow==\n'),
   'url.txt': J('https://x.com/a?to', 'ken=abcdef1234567890'),
   'path.txt': J('文件在 C:\\Us', 'ers\\some', 'one\\secret.txt'),
+  // ★ 正斜杠版本 —— 2026-10-30 发现的真实漏洞：
+  //   原来的路径正则只认反斜杠，正斜杠写法完全绕过。
+  //   JS/配置里正斜杠更常见，所以这两条必须单独测。
+  'path-slash.txt': J('文件在 C:/Us', 'ers/some', 'one/secret.txt'),
+  'repo-slash.txt': J('路径是 E:/QQ', ' BOT/qq-', 'bridge'),
   'unixpath.txt': J('在 /Us', 'ers/some', 'one/x 里'),
   'db.txt': J('postgre', 's://user:secret', 'pass@localhost:5432/db'),
   'sshkey.txt': J('私钥是 /home/x/.s', 'sh/id_', 'rsa'),
@@ -70,6 +75,8 @@ const EXPECT = [
   ['pem.txt', '私钥块'],
   ['url.txt', 'URL 内嵌凭据'],
   ['path.txt', 'Windows 用户路径'],
+  ['path-slash.txt', 'Windows 用户路径（正斜杠）'],
+  ['repo-slash.txt', '仓库绝对路径（正斜杠）'],
   ['unixpath.txt', 'Unix home 路径'],
   ['db.txt', '连接串密码'],
   ['sshkey.txt', 'SSH 私钥路径'],

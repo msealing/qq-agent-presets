@@ -93,13 +93,19 @@ const RULES = [
   {
     id: 'windows-user-path',
     desc: '本机用户目录路径',
-    re: /[A-Za-z]:\\Users\\[^\\\s"']+/g,
+    // ★ 2026-10-30 修的漏：正斜杠写法（`C:/Users/...`）原来完全绕过 ——
+    //   JS/配置里正斜杠比反斜杠更常见。
+    re: /[A-Za-z]:[\\/]Users[\\/][^\\/\s"']+/g,
     fatal: true,
   },
   {
     id: 'repo-absolute-path',
     desc: '仓库绝对路径',
-    re: /[A-Za-z]:\\(?:QQ BOT|dsh project|DeepSeek Harness)[\\\s"']/g,
+    // ★ 2026-10-30 修的漏：**必须同时认正斜杠和反斜杠**。
+    //   原来的正则只写 `\\`（反斜杠），所以 `E:/QQ BOT/...` 这种
+    //   JS 里更常见的正斜杠写法**完全绕过**了这条规则。
+    //   现在用字符类 `[\\/]` 覆盖两种分隔符。
+    re: /[A-Za-z]:[\\/](?:QQ BOT|dsh project|DeepSeek Harness)(?:[\\/\s"']|$)/g,
     fatal: true,
     // ★ DSH 的安装位置（"F:\DeepSeek Harness"）是**公开的常见安装路径**，
     //   setup-dsh.mjs 必须能写它才能找到 CLI —— 不是隐私。
@@ -120,7 +126,7 @@ const RULES = [
     //     C:\Users\<用户名>\.dsh    ← 泄露了用户名
     //     /Users/<用户名>/.dsh     ← 泄露了用户名
     //   纯 "~/.dsh" 不拦 —— 那是公开信息。
-    re: /(?:[A-Za-z]:\\Users\\[^\\\s"']+|\/Users\/[A-Za-z0-9._-]+)\/\.dsh/g,
+    re: /(?:[A-Za-z]:[\\/]Users[\\/][^\\/\s"']+|\/Users\/[A-Za-z0-9._-]+)[\\/]\.dsh/g,
     fatal: true,
   },
   {
@@ -210,7 +216,7 @@ const RULES = [
   {
     id: 'ssh-private-key-path',
     desc: 'SSH 私钥路径',
-    re: /[/\\]\.ssh[/\\]id_[a-z0-9]+(?!\w)/gi,
+    re: /[\\/]\.ssh[\\/]id_[a-z0-9]+(?!\w)/gi,
     fatal: true,
   },
 
